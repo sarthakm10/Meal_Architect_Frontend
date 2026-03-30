@@ -1,0 +1,51 @@
+import { useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
+import HomePage from "./components/HomePage";
+import Login from "./components/Login";
+import Register from "./components/Register";
+
+// A temporary placeholder for the page we will build later
+const Dashboard = () => (
+  <div className="pt-32 text-center text-2xl font-bold">
+    Meal Creation Page Coming Soon!
+  </div>
+);
+
+function App() {
+  const [isDark, setIsDark] = useState(true);
+
+  return (
+    <AuthProvider>
+      <div
+        className={`min-h-screen transition-colors duration-700 ${isDark ? "bg-[#0C0B09] text-stone-100" : "bg-[#FAFAF9] text-stone-900"}`}
+      >
+        {/* The Navbar is now locked here at the global level! */}
+        <Navbar isDark={isDark} toggleDark={() => setIsDark(!isDark)} />
+
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage isDark={isDark} />} />
+          <Route path="/login" element={<Login isDark={isDark} />} />
+          <Route path="/register" element={<Register isDark={isDark} />} />
+
+          {/* Protected Route (Meal Creation) */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
+    </AuthProvider>
+  );
+}
+
+export default App;
