@@ -45,11 +45,21 @@ interface Meal {
   mealIngredients: MealIngredient[];
 }
 
+type MealType = "BREAKFAST" | "LUNCH" | "SNACK" | "DINNER";
+
 interface MealLogEntry {
   id: number;
   meal: Meal;
   consumedDate: string;
+  mealType?: MealType;
 }
+
+const MEAL_TYPES: { key: MealType; label: string; icon: string; color: string }[] = [
+  { key: "BREAKFAST", label: "Breakfast", icon: "🌅", color: "#FBBF24" },
+  { key: "LUNCH", label: "Lunch", icon: "☀️", color: "#FB923C" },
+  { key: "SNACK", label: "Snack", icon: "🍿", color: "#A78BFA" },
+  { key: "DINNER", label: "Dinner", icon: "🌙", color: "#60A5FA" },
+];
 
 interface DailyProgress {
   targetCalories: number;
@@ -92,7 +102,7 @@ function prettyDate(d: Date): string {
 
 function getMealCalories(meal: Meal): number {
   return (meal.mealIngredients ?? []).reduce(
-    (sum, mi) => sum + ((mi.ingredient.calories ?? 0) * mi.quantity) / 100,
+    (sum, mi) => sum + ((mi.ingredient.calories ?? 0) * mi.quantity),
     0,
   );
 }
@@ -100,7 +110,7 @@ function getMealCalories(meal: Meal): number {
 function getMealProtein(meal: Meal): number {
   return (meal.mealIngredients ?? []).reduce(
     (sum, mi) =>
-      sum + ((mi.ingredient.proteinGrams ?? 0) * mi.quantity) / 100,
+      sum + ((mi.ingredient.proteinGrams ?? 0) * mi.quantity),
     0,
   );
 }
@@ -179,6 +189,7 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
   const [loggingMealId, setLoggingMealId] = useState<number | null>(null);
   const [deletingLogId, setDeletingLogId] = useState<number | null>(null);
   const [mealSearchQuery, setMealSearchQuery] = useState("");
+  const [selectedMealType, setSelectedMealType] = useState<MealType | null>(null);
   const [toast, setToast] = useState<{
     msg: string;
     type: "success" | "error";
@@ -245,14 +256,20 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
   // ─── Actions ────────────────────────────────────────────────────────
   const logMeal = async (mealId: number) => {
     if (!userId) return;
+    if (!selectedMealType) {
+      showToast("Please select a meal type first.", "error");
+      return;
+    }
     setLoggingMealId(mealId);
     try {
       await api.post(`/users/${userId}/meal-logs`, {
         mealId: String(mealId),
         date: formatDate(selectedDate),
+        mealType: selectedMealType,
       });
       showToast("Meal logged! 🎉", "success");
       setShowLogModal(false);
+      setSelectedMealType(null);
       fetchLogs();
       fetchProgress();
     } catch {
@@ -568,6 +585,9 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
                   const color = MEAL_COLORS[i % MEAL_COLORS.length];
                   const ingredientCount =
                     log.meal.mealIngredients?.length ?? 0;
+                  const mealTypeInfo = MEAL_TYPES.find(
+                    (mt) => mt.key === log.mealType,
+                  );
 
                   return (
                     <motion.div
@@ -596,21 +616,34 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
                         }}
                         className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 relative z-10 text-xl"
                         style={{
-                          background: `${color}18`,
-                          border: `1px solid ${color}40`,
+                          background: mealTypeInfo ? `${mealTypeInfo.color}18` : `${color}18`,
+                          border: `1px solid ${mealTypeInfo ? `${mealTypeInfo.color}40` : `${color}40`}`,
                         }}
                       >
-                        🍽️
+                        {mealTypeInfo ? mealTypeInfo.icon : "🍽️"}
                       </motion.div>
 
                       {/* Content */}
                       <div className="flex-1 pt-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
-                          <span
-                            className={`text-sm transition-colors duration-500 font-medium truncate ${isDark ? "text-stone-200" : "text-stone-800"}`}
-                          >
-                            {log.meal.name}
-                          </span>
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span
+                              className={`text-sm transition-colors duration-500 font-medium truncate ${isDark ? "text-stone-200" : "text-stone-800"}`}
+                            >
+                              {log.meal.name}
+                            </span>
+                            {mealTypeInfo && (
+                              <span
+                                className="text-[10px] font-semibold px-2 py-0.5 rounded-md flex-shrink-0"
+                                style={{
+                                  background: `${mealTypeInfo.color}15`,
+                                  color: mealTypeInfo.color,
+                                }}
+                              >
+                                {mealTypeInfo.label}
+                              </span>
+                            )}
+                          </div>
                           <div className="flex items-center gap-2 flex-shrink-0">
                             <span
                               className="text-xs px-2 py-0.5 rounded-lg font-medium"
@@ -655,6 +688,34 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
                             {Math.round(pro)}g protein
                           </span>
                         </div>
+
+                        {/* Ingredient chips */}
+                        {(log.meal.mealIngredients ?? []).length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {(log.meal.mealIngredients ?? []).map((mi, idx) => (
+                              <span
+                                key={idx}
+                                className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-1 rounded-lg border transition-colors ${
+                                  isDark
+                                    ? "bg-white/[0.04] border-white/[0.06] text-stone-400"
+                                    : "bg-stone-50 border-stone-200 text-stone-500"
+                                }`}
+                              >
+                                {mi.ingredient.iconUrl && (
+                                  <img
+                                    src={mi.ingredient.iconUrl}
+                                    alt=""
+                                    className="w-4 h-4 object-contain"
+                                  />
+                                )}
+                                {mi.ingredient.name}
+                                <span className={`${isDark ? "text-stone-600" : "text-stone-400"}`}>
+                                  {mi.quantity}g
+                                </span>
+                              </span>
+                            ))}
+                          </div>
+                        )}
 
                         {/* Progress bar */}
                         <div
@@ -957,11 +1018,42 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
                   </motion.button>
                 </div>
                 <p
-                  className={`text-xs mb-4 ${isDark ? "text-stone-500" : "text-stone-400"}`}
+                  className={`text-xs mb-3 ${isDark ? "text-stone-500" : "text-stone-400"}`}
                 >
-                  Select a saved meal to add to{" "}
-                  {prettyDate(selectedDate).toLowerCase()}'s log
+                  Select a meal type, then pick a saved meal to log
                 </p>
+
+                {/* Meal Type Selector */}
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  {MEAL_TYPES.map((mt) => (
+                    <motion.button
+                      key={mt.key}
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => setSelectedMealType(mt.key)}
+                      className={`flex flex-col items-center gap-1 py-2.5 px-2 rounded-xl border text-xs font-semibold transition-all duration-200 ${
+                        selectedMealType === mt.key
+                          ? "shadow-md"
+                          : isDark
+                            ? "border-white/[0.06] text-stone-500 bg-white/[0.02] hover:bg-white/[0.04]"
+                            : "border-stone-200 text-stone-400 bg-stone-50 hover:bg-stone-100"
+                      }`}
+                      style={
+                        selectedMealType === mt.key
+                          ? {
+                              borderColor: `${mt.color}50`,
+                              background: `${mt.color}15`,
+                              color: mt.color,
+                              boxShadow: `0 4px 12px ${mt.color}20`,
+                            }
+                          : undefined
+                      }
+                    >
+                      <span className="text-lg">{mt.icon}</span>
+                      {mt.label}
+                    </motion.button>
+                  ))}
+                </div>
 
                 {/* Search */}
                 <div
