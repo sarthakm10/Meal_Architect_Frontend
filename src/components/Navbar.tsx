@@ -8,6 +8,8 @@ import {
   Moon,
   LogOut,
   User as UserIcon,
+  Clock,
+  UtensilsCrossed,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -53,7 +55,7 @@ export default function Navbar({ isDark, toggleDark }: NavbarProps) {
           : "none",
       }}
     >
-      <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-16">
+      <div className="px-8 flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2.5 cursor-pointer">
           <motion.div
             animate={{
@@ -91,6 +93,22 @@ export default function Navbar({ isDark, toggleDark }: NavbarProps) {
 
           {isAuthenticated ? (
             <>
+              <motion.button
+                onClick={() => navigate("/dashboard")}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm border transition-colors duration-500 ${isDark ? "bg-white/[0.04] border-white/[0.07] text-stone-300 hover:text-orange-400" : "bg-black/[0.04] border-black/[0.07] text-stone-600 hover:text-orange-600"}`}
+              >
+                <UtensilsCrossed className="w-3.5 h-3.5" /> Builder
+              </motion.button>
+              <motion.button
+                onClick={() => navigate("/tracker")}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm border transition-colors duration-500 ${isDark ? "bg-white/[0.04] border-white/[0.07] text-stone-300 hover:text-emerald-400" : "bg-black/[0.04] border-black/[0.07] text-stone-600 hover:text-emerald-600"}`}
+              >
+                <Clock className="w-3.5 h-3.5" /> Tracker
+              </motion.button>
               <div
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium ${isDark ? "text-stone-300" : "text-stone-700"}`}
               >

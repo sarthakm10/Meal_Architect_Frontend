@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import MealCreator from "./components/MealCreator";
+import MealTracker from "./components/MealTracker";
 
 function App() {
   const [isDark, setIsDark] = useState(true);
@@ -31,6 +32,16 @@ function App() {
             element={
               <ProtectedRoute>
                 <MealCreator isDark={isDark} />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Route (Meal Tracker) */}
+          <Route
+            path="/tracker"
+            element={
+              <ProtectedRoute>
+                <MealTracker isDark={isDark} />
               </ProtectedRoute>
             }
           />
