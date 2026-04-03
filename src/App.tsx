@@ -6,13 +6,7 @@ import Navbar from "./components/Navbar";
 import HomePage from "./components/HomePage";
 import Login from "./components/Login";
 import Register from "./components/Register";
-
-// A temporary placeholder for the page we will build later
-const Dashboard = () => (
-  <div className="pt-32 text-center text-2xl font-bold">
-    Meal Creation Page Coming Soon!
-  </div>
-);
+import MealCreator from "./components/MealCreator";
 
 function App() {
   const [isDark, setIsDark] = useState(true);
@@ -36,7 +30,7 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <MealCreator isDark={isDark} />
               </ProtectedRoute>
             }
           />

@@ -603,11 +603,22 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
   const heroVisualY = useTransform(scrollY, [0, 500], [0, 60]);
 
   return (
-    <div className="pt-16">
+    <div className="pt-16 relative overflow-hidden">
       {/* ══════════════════════════════
           HERO
       ══════════════════════════════ */}
       <section className="relative z-10 max-w-7xl mx-auto px-8 pt-36 pb-24">
+        {/* Hero gradient orb */}
+        <motion.div
+          className={`absolute rounded-full blur-[120px] w-[600px] h-[600px] -top-40 -right-20 pointer-events-none ${isDark ? "bg-orange-600" : "bg-orange-300"}`}
+          animate={{ scale: [1, 1.15, 1], opacity: [0.18, 0.3, 0.18] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className={`absolute rounded-full blur-[100px] w-[400px] h-[400px] top-1/3 -left-32 pointer-events-none ${isDark ? "bg-amber-700" : "bg-amber-200"}`}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.12, 0.25, 0.12] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
             <motion.div
@@ -772,6 +783,12 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
           SECTION 01 — MEAL TRACKER
       ══════════════════════════════ */}
       <section className="relative z-10 max-w-7xl mx-auto px-8 py-32">
+        {/* Meal Tracker gradient orb */}
+        <motion.div
+          className={`absolute rounded-full blur-[120px] w-[500px] h-[500px] top-0 -left-40 pointer-events-none ${isDark ? "bg-emerald-700" : "bg-emerald-200"}`}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.12, 0.25, 0.12] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -853,6 +870,17 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
             : "linear-gradient(180deg, transparent 0%, #F5F5F4 50%, transparent 100%)",
         }}
       >
+        {/* Goal Tracking gradient orb */}
+        <motion.div
+          className={`absolute rounded-full blur-[130px] w-[550px] h-[550px] top-1/4 -right-32 pointer-events-none ${isDark ? "bg-blue-700" : "bg-blue-200"}`}
+          animate={{ scale: [1, 1.18, 1], opacity: [0.1, 0.22, 0.1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        <motion.div
+          className={`absolute rounded-full blur-[100px] w-[350px] h-[350px] bottom-0 left-[10%] pointer-events-none ${isDark ? "bg-indigo-800" : "bg-indigo-100"}`}
+          animate={{ scale: [1, 1.25, 1], opacity: [0.08, 0.18, 0.08] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        />
         <div className="max-w-7xl mx-auto px-8">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -1027,6 +1055,17 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
           SECTION 03 — GROCERY LIST
       ══════════════════════════════ */}
       <section className="relative z-10 max-w-7xl mx-auto px-8 py-32">
+        {/* Grocery List gradient orb */}
+        <motion.div
+          className={`absolute rounded-full blur-[120px] w-[500px] h-[500px] top-[10%] right-[-15%] pointer-events-none ${isDark ? "bg-purple-700" : "bg-purple-200"}`}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.12, 0.25, 0.12] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        />
+        <motion.div
+          className={`absolute rounded-full blur-[100px] w-[350px] h-[350px] bottom-[10%] left-[-10%] pointer-events-none ${isDark ? "bg-fuchsia-800" : "bg-fuchsia-100"}`}
+          animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.18, 0.08] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 2.5 }}
+        />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
