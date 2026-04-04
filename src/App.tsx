@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import MealCreator from "./components/MealCreator";
 import MealTracker from "./components/MealTracker";
+import GoalTracking from "./components/GoalTracking";
 
 function App() {
   const [isDark, setIsDark] = useState(true);
@@ -42,6 +43,16 @@ function App() {
             element={
               <ProtectedRoute>
                 <MealTracker isDark={isDark} />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Route (Goal Tracking) */}
+          <Route
+            path="/goals"
+            element={
+              <ProtectedRoute>
+                <GoalTracking isDark={isDark} />
               </ProtectedRoute>
             }
           />

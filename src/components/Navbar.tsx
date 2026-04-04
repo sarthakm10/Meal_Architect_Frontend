@@ -10,6 +10,7 @@ import {
   User as UserIcon,
   Clock,
   UtensilsCrossed,
+  Target,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -108,6 +109,14 @@ export default function Navbar({ isDark, toggleDark }: NavbarProps) {
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm border transition-colors duration-500 ${isDark ? "bg-white/[0.04] border-white/[0.07] text-stone-300 hover:text-emerald-400" : "bg-black/[0.04] border-black/[0.07] text-stone-600 hover:text-emerald-600"}`}
               >
                 <Clock className="w-3.5 h-3.5" /> Tracker
+              </motion.button>
+              <motion.button
+                onClick={() => navigate("/goals")}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm border transition-colors duration-500 ${isDark ? "bg-white/[0.04] border-white/[0.07] text-stone-300 hover:text-blue-400" : "bg-black/[0.04] border-black/[0.07] text-stone-600 hover:text-blue-600"}`}
+              >
+                <Target className="w-3.5 h-3.5" /> Goals
               </motion.button>
               <div
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium ${isDark ? "text-stone-300" : "text-stone-700"}`}
