@@ -9,6 +9,7 @@ import Register from "./components/Register";
 import MealCreator from "./components/MealCreator";
 import MealTracker from "./components/MealTracker";
 import GoalTracking from "./components/GoalTracking";
+import GroceryList from "./components/GroceryList";
 
 function App() {
   const [isDark, setIsDark] = useState(true);
@@ -53,6 +54,16 @@ function App() {
             element={
               <ProtectedRoute>
                 <GoalTracking isDark={isDark} />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Route (Grocery List) */}
+          <Route
+            path="/grocery"
+            element={
+              <ProtectedRoute>
+                <GroceryList isDark={isDark} />
               </ProtectedRoute>
             }
           />
