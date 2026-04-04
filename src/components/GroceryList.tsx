@@ -496,7 +496,7 @@ export default function GroceryList({ isDark = true }: { isDark?: boolean }) {
                   animate={heroInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.1 + i * 0.08, duration: 0.5 }}
                   whileHover={{ y: -2 }}
-                  className={`p-5 rounded-2xl border transition-all duration-200 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07] shadow-sm"}`}
+                  className={`p-5 rounded-2xl border transition-all duration-200 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-stone-200/80 shadow-sm shadow-stone-100"}`}
                 >
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-xl">{s.emoji}</span>
@@ -526,7 +526,7 @@ export default function GroceryList({ isDark = true }: { isDark?: boolean }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className={`rounded-2xl border p-4 mb-8 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07] shadow-sm"}`}
+              className={`rounded-2xl border p-4 mb-8 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-stone-200/80 shadow-sm shadow-stone-100"}`}
             >
               <div className="flex items-center justify-between mb-2">
                 <span
@@ -567,7 +567,7 @@ export default function GroceryList({ isDark = true }: { isDark?: boolean }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45 }}
-              className={`relative rounded-2xl border mb-8 transition-colors ${isDark ? "bg-white/[0.03] border-white/[0.07] focus-within:border-purple-500/40" : "bg-white border-black/[0.07] focus-within:border-purple-500/50"}`}
+              className={`relative rounded-2xl border mb-8 transition-colors ${isDark ? "bg-white/[0.03] border-white/[0.07] focus-within:border-purple-500/40" : "bg-white border-stone-200/80 shadow-sm focus-within:border-purple-500/50"}`}
             >
               <Search
                 className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-stone-600" : "text-stone-400"}`}
@@ -616,7 +616,7 @@ export default function GroceryList({ isDark = true }: { isDark?: boolean }) {
                       delay: 0.5 + catIdx * 0.1,
                       duration: 0.5,
                     }}
-                    className={`rounded-3xl border overflow-hidden ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"} shadow-lg`}
+                    className={`rounded-3xl border overflow-hidden ${isDark ? "bg-[#131210] border-white/[0.07] shadow-lg" : "bg-white border-stone-200/80 shadow-lg shadow-stone-200/50"}`}
                   >
                     {/* Category header */}
                     <button
@@ -833,7 +833,7 @@ export default function GroceryList({ isDark = true }: { isDark?: boolean }) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className={`mt-8 rounded-3xl border p-6 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"} shadow-lg`}
+              className={`mt-8 rounded-3xl border p-6 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-lg" : "bg-white border-stone-200/80 shadow-lg shadow-stone-200/50"}`}
             >
               <div className="flex items-center gap-2 mb-5">
                 <IndianRupee
@@ -911,7 +911,7 @@ export default function GroceryList({ isDark = true }: { isDark?: boolean }) {
 
               {/* Grand total */}
               <div
-                className={`mt-6 pt-4 border-t flex items-center justify-between ${isDark ? "border-white/[0.07]" : "border-black/[0.07]"}`}
+                className={`mt-6 pt-4 border-t flex items-center justify-between ${isDark ? "border-white/[0.07]" : "border-stone-200"}`}
               >
                 <span
                   className={`text-sm font-semibold ${isDark ? "text-stone-300" : "text-stone-700"}`}

@@ -426,7 +426,7 @@ export default function GoalTracking({ isDark = true }: { isDark?: boolean }) {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className={`flex flex-col items-center gap-4 p-8 rounded-3xl border shadow-xl ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"}`}
+                className={`flex flex-col items-center gap-4 p-8 rounded-3xl border ${isDark ? "bg-[#131210] border-white/[0.07] shadow-xl" : "bg-white border-stone-200 shadow-lg shadow-stone-200/60"}`}
               >
                 <RingChart
                   pct={calPct}
@@ -494,7 +494,7 @@ export default function GoalTracking({ isDark = true }: { isDark?: boolean }) {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 + i * 0.08, duration: 0.45 }}
                     whileHover={{ x: 4, borderColor: `${s.color}40` }}
-                    className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border transition-all duration-200 cursor-default ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07] shadow-sm"}`}
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl border transition-all duration-200 cursor-default ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-stone-200 shadow-sm"}`}
                   >
                     <span className="text-2xl">{s.emoji}</span>
                     <div className="flex-1 min-w-0">
@@ -514,7 +514,7 @@ export default function GoalTracking({ isDark = true }: { isDark?: boolean }) {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className={`flex flex-col items-center gap-4 p-8 rounded-3xl border shadow-xl ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"}`}
+                className={`flex flex-col items-center gap-4 p-8 rounded-3xl border ${isDark ? "bg-[#131210] border-white/[0.07] shadow-xl" : "bg-white border-stone-200 shadow-lg shadow-stone-200/60"}`}
               >
                 <RingChart
                   pct={proPct}
@@ -547,7 +547,7 @@ export default function GoalTracking({ isDark = true }: { isDark?: boolean }) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className={`rounded-3xl border p-6 mb-10 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"} shadow-lg`}
+              className={`rounded-3xl border p-6 mb-10 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-lg" : "bg-white border-stone-200 shadow-lg shadow-stone-200/60"}`}
             >
               <div className="flex items-center gap-2 mb-6">
                 <Calendar className={`w-4 h-4 ${isDark ? "text-blue-400" : "text-blue-500"}`} />
@@ -650,7 +650,7 @@ export default function GoalTracking({ isDark = true }: { isDark?: boolean }) {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
-              className={`rounded-3xl border p-6 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"} shadow-lg`}
+              className={`rounded-3xl border p-6 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-lg" : "bg-white border-stone-200 shadow-lg shadow-stone-200/60"}`}
             >
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
@@ -758,7 +758,7 @@ export default function GoalTracking({ isDark = true }: { isDark?: boolean }) {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 20 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className={`relative w-full max-w-md rounded-3xl border p-6 shadow-2xl ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"}`}
+              className={`relative w-full max-w-md rounded-3xl border p-6 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-2xl" : "bg-white border-stone-200 shadow-2xl shadow-stone-300/40"}`}
             >
               {/* Close button */}
               <button

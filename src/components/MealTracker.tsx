@@ -504,7 +504,7 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
           {/* Timeline */}
           <div
             ref={timelineRef}
-            className={`relative p-6 rounded-3xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-2xl" : "bg-white border-stone-200 shadow-lg shadow-stone-200/60"}`}
+            className={`relative p-6 rounded-3xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-2xl" : "bg-white border-stone-200/80 shadow-xl shadow-stone-200/60"}`}
           >
             <div
               className="absolute -inset-1 rounded-3xl blur-2xl opacity-20 pointer-events-none"
@@ -781,7 +781,7 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className={`p-6 rounded-3xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-xl" : "bg-white border-stone-200 shadow-lg shadow-stone-200/60"}`}
+                className={`p-6 rounded-3xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-xl" : "bg-white border-stone-200/80 shadow-xl shadow-stone-200/60"}`}
               >
                 <p
                   className={`text-xs font-bold tracking-widest uppercase mb-5 ${isDark ? "text-stone-400" : "text-stone-500"}`}
@@ -893,7 +893,7 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
               <motion.div
                 key={stat.label}
                 whileHover={{ y: -2 }}
-                className={`flex flex-col items-center gap-1 py-4 px-2 rounded-2xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-stone-200 shadow-sm"}`}
+                className={`flex flex-col items-center gap-1 py-4 px-2 rounded-2xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-stone-200/80 shadow-sm shadow-stone-100"}`}
               >
                 <stat.icon
                   className="w-4 h-4 mb-1"
@@ -953,7 +953,7 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 + i * 0.08, duration: 0.4 }}
                 whileHover={{ x: 4, borderColor: `${s.color}40` }}
-                className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-500 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-stone-200 shadow-sm"}`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-500 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-stone-200/80 shadow-sm shadow-stone-100"}`}
               >
                 <span className="text-2xl">{s.icon}</span>
                 <div className="flex-1 min-w-0">
@@ -993,7 +993,7 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
               exit={{ opacity: 0, scale: 0.92, y: 30 }}
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
               onClick={(e) => e.stopPropagation()}
-              className={`w-full max-w-lg max-h-[80vh] overflow-hidden rounded-3xl border shadow-2xl ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-stone-200"}`}
+              className={`w-full max-w-lg max-h-[80vh] overflow-hidden rounded-3xl border ${isDark ? "bg-[#131210] border-white/[0.07] shadow-2xl" : "bg-white border-stone-200/80 shadow-2xl shadow-stone-300/40"}`}
             >
               {/* Modal Header */}
               <div className="px-6 pt-6 pb-4">
@@ -1057,7 +1057,7 @@ export default function MealTracker({ isDark = true }: { isDark?: boolean }) {
 
                 {/* Search */}
                 <div
-                  className={`relative rounded-xl border transition-colors ${isDark ? "bg-white/[0.03] border-white/[0.07]" : "bg-stone-50 border-black/[0.07]"}`}
+                  className={`relative rounded-xl border transition-colors ${isDark ? "bg-white/[0.03] border-white/[0.07]" : "bg-stone-50 border-stone-200/80"}`}
                 >
                   <Search
                     className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-stone-600" : "text-stone-400"}`}

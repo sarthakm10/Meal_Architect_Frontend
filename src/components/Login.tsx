@@ -227,7 +227,7 @@ export default function Login({ isDark }: { isDark: boolean }) {
                   transition={{ duration: 0.3 }}
                   className="mb-5 overflow-hidden"
                 >
-                  <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center font-medium tracking-wide">
+                  <div className={`p-3 rounded-xl border text-xs text-center font-medium tracking-wide ${isDark ? "bg-red-500/10 border-red-500/20 text-red-400" : "bg-red-50 border-red-200 text-red-600"}`}>
                     {error}
                   </div>
                 </motion.div>
@@ -354,7 +354,7 @@ export default function Login({ isDark }: { isDark: boolean }) {
                 className={`absolute inset-x-0 h-px ${isDark ? "bg-white/[0.07]" : "bg-black/[0.07]"}`}
               />
               <span
-                className={`relative px-4 text-[11px] font-medium tracking-widest uppercase ${isDark ? "bg-[#131210] text-stone-600" : "bg-white text-stone-400"}`}
+                className={`relative px-4 text-[11px] font-medium tracking-widest uppercase ${isDark ? "bg-[#131210] text-stone-600" : "bg-white/90 text-stone-400"}`}
               >
                 or continue with
               </span>

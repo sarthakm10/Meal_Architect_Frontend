@@ -741,7 +741,7 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
             className="relative"
           >
             <div
-              className={`relative p-5 rounded-3xl border transition-colors duration-500 shadow-2xl ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"}`}
+              className={`relative p-5 rounded-3xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-2xl" : "bg-white border-stone-200/80 shadow-xl shadow-stone-200/50"}`}
             >
               <div
                 className="absolute -inset-1 rounded-3xl blur-2xl opacity-30"
@@ -795,7 +795,7 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className={`relative p-6 rounded-3xl border shadow-2xl transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"}`}
+            className={`relative p-6 rounded-3xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-2xl" : "bg-white border-stone-200/80 shadow-xl shadow-stone-200/50"}`}
           >
             <div
               className="absolute -inset-1 rounded-3xl blur-2xl opacity-20"
@@ -920,7 +920,7 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
               initial={{ opacity: 0, scale: 0.85 }}
               animate={goalsInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className={`flex flex-col items-center gap-4 p-8 rounded-3xl border transition-colors duration-500 shadow-xl ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"}`}
+              className={`flex flex-col items-center gap-4 p-8 rounded-3xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-xl" : "bg-white border-stone-200/80 shadow-lg shadow-stone-200/50"}`}
             >
               <RingChart
                 pct={70}
@@ -991,7 +991,7 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
                   animate={goalsInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
                   whileHover={{ x: 4, borderColor: `${s.color}40` }}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-500 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07] shadow-sm"}`}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all duration-500 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-stone-200/80 shadow-sm"}`}
                 >
                   <span className="text-2xl">{s.icon}</span>
                   <div className="flex-1 min-w-0">
@@ -1015,7 +1015,7 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
               initial={{ opacity: 0, scale: 0.85 }}
               animate={goalsInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className={`flex flex-col items-center gap-4 p-8 rounded-3xl border transition-colors duration-500 shadow-xl ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"}`}
+              className={`flex flex-col items-center gap-4 p-8 rounded-3xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-xl" : "bg-white border-stone-200/80 shadow-lg shadow-stone-200/50"}`}
             >
               <RingChart
                 pct={55}
@@ -1114,7 +1114,7 @@ export default function HomePage({ isDark }: { isDark: boolean }) {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className={`relative p-6 rounded-3xl border shadow-2xl transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07]" : "bg-white border-black/[0.07]"}`}
+            className={`relative p-6 rounded-3xl border transition-colors duration-500 ${isDark ? "bg-[#131210] border-white/[0.07] shadow-2xl" : "bg-white border-stone-200/80 shadow-xl shadow-stone-200/50"}`}
           >
             <div
               className="absolute -inset-1 rounded-3xl blur-2xl opacity-20"

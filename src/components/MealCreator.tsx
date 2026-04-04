@@ -493,7 +493,7 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
                     ? "0 0 0 3px rgba(249,115,22,0.1)"
                     : "0 0 0 0px rgba(249,115,22,0)",
                 }}
-                className={`relative rounded-2xl border transition-colors ${isDark ? "bg-white/[0.03]" : "bg-white"
+                className={`relative rounded-2xl border transition-colors ${isDark ? "bg-white/[0.03]" : "bg-white shadow-sm border-stone-200/80"
                   }`}
               >
                 <Search
@@ -669,9 +669,9 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
               />
               <div
                 className={`relative rounded-3xl border overflow-hidden ${isDark
-                  ? "bg-[#131210] border-white/[0.07]"
-                  : "bg-white border-black/[0.07]"
-                  } shadow-2xl ${isDark ? "shadow-black/40" : "shadow-black/10"}`}
+                  ? "bg-[#131210] border-white/[0.07] shadow-2xl shadow-black/40"
+                  : "bg-white border-stone-200/80 shadow-2xl shadow-stone-300/30"
+                  }`}
               >
                 {/* Card header with gradient */}
                 <div className="relative overflow-hidden px-6 pt-6 pb-4">
@@ -1235,8 +1235,8 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
                       whileHover={{ y: -6 }}
                       className={`group relative rounded-3xl border overflow-hidden transition-all duration-300 ${isDark
                         ? "bg-[#131210] border-white/[0.07] hover:border-orange-500/30"
-                        : "bg-white border-black/[0.07] hover:border-orange-500/30"
-                        } shadow-lg hover:shadow-2xl ${isDark ? "hover:shadow-orange-500/5" : "hover:shadow-orange-500/10"}`}
+                        : "bg-white border-stone-200/80 hover:border-orange-500/30 shadow-lg shadow-stone-200/40"
+                        } hover:shadow-2xl ${isDark ? "hover:shadow-orange-500/5" : "hover:shadow-orange-500/10"}`}
                     >
                       {/* Card glow on hover */}
                       <div
