@@ -89,6 +89,7 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
   const [searchFocused, setSearchFocused] = useState(false);
   const [communityMeals, setCommunityMeals] = useState<SavedMeal[]>([]);
   const [communityMealIndex, setCommunityMealIndex] = useState(0);
+  const [savingCommunityId, setSavingCommunityId] = useState<number | null>(null);
 
   // ─── Fetch ingredients ─────────────────────────────────────────────────────
   const fetchIngredients = useCallback(async () => {
@@ -144,7 +145,7 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
     if (communityMeals.length <= 2) return;
     const interval = setInterval(() => {
       setCommunityMealIndex((prev) => (prev + 1) % communityMeals.length);
-    }, 4000);
+    }, 6000);
     return () => clearInterval(interval);
   }, [communityMeals.length]);
 
@@ -235,6 +236,28 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
     }
   };
 
+  // ─── Save community meal to user's saved meals ────────────────────────────
+  const saveCommunityMeal = async (meal: SavedMeal) => {
+    if (!userId) return;
+    setSavingCommunityId(meal.id);
+    try {
+      await api.post("/meals", {
+        userId: Number(userId),
+        name: meal.name,
+        ingredients: (meal.mealIngredients ?? []).map((mi) => ({
+          ingredientId: mi.ingredient.id,
+          quantity: mi.quantity,
+        })),
+      });
+      showToast(`"${meal.name}" added to your saved meals!`, "success");
+      fetchSavedMeals();
+    } catch {
+      showToast("Failed to save community meal.", "error");
+    } finally {
+      setSavingCommunityId(null);
+    }
+  };
+
   // ─── Helpers ──────────────────────────────────────────────────────────────
   const filteredIngredients = (() => {
     const matched = ingredients.filter((i) =>
@@ -322,6 +345,12 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
           50%      { transform: translateY(-6px); }
         }
         .float-icon { animation: float 3s ease-in-out infinite; }
+
+        @keyframes orbit-spin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+        .orbit-ring { animation: orbit-spin 30s linear infinite; }
       `}</style>
 
       {/* ── Animated background (Login.tsx style) ── */}
@@ -446,7 +475,7 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8"
+            className="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6 lg:gap-20"
           >
             {/* ── LEFT: Ingredient Browser ── */}
             <div className="space-y-5">
@@ -544,7 +573,7 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
                 </div>
               ) : (
                 <div className={`max-h-[65vh] overflow-y-auto rounded-2xl pr-1`}>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
                     {filteredIngredients.map((ing, i) => {
                       const isAdded = selected.some(
                         (s) => s.ingredient.id === ing.id,
@@ -563,8 +592,8 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
                           whileHover={{ y: -4, scale: 1.03 }}
                           whileTap={{ scale: 0.97 }}
                           onClick={() => addIngredient(ing)}
-                          className={`relative cursor-pointer rounded-2xl border bg-gradient-to-br p-4 transition-all duration-200 group overflow-hidden ${catStyle.gradient} ${catStyle.border} ${isAdded
-                            ? "ring-2 ring-orange-500 ring-offset-2 " +
+                          className={`relative cursor-pointer rounded-xl border bg-gradient-to-br px-3 py-2.5 transition-all duration-200 group overflow-hidden ${catStyle.gradient} ${catStyle.border} ${isAdded
+                            ? "ring-2 ring-orange-500 ring-offset-1 " +
                             (isDark
                               ? "ring-offset-[#0C0B09]"
                               : "ring-offset-[#FAFAF9]")
@@ -578,47 +607,47 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
                                 initial={{ scale: 0, rotate: -180 }}
                                 animate={{ scale: 1, rotate: 0 }}
                                 exit={{ scale: 0, rotate: 180 }}
-                                className="absolute top-2.5 right-2.5 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center shadow-md shadow-orange-500/40"
+                                className="absolute top-2 right-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center shadow-md shadow-orange-500/40"
                               >
-                                <CheckCircle className="w-3.5 h-3.5 text-white" />
+                                <CheckCircle className="w-3 h-3 text-white" />
                               </motion.div>
                             )}
                           </AnimatePresence>
 
                           {/* Icon from backend */}
-                          <div className="mb-3 w-12 h-12 flex items-center justify-center">
+                          <div className="mb-2 w-9 h-9 flex items-center justify-center">
                             <img
                               src={getIcon(ing)}
                               alt={ing.name}
-                              className="w-10 h-10 object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-200"
+                              className="w-8 h-8 object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-200"
                             />
                           </div>
 
                           <p
-                            className={`font-semibold text-sm leading-tight mb-1.5 ${isDark ? "text-stone-200" : "text-stone-800"}`}
+                            className={`font-semibold text-xs leading-tight mb-1 ${isDark ? "text-stone-200" : "text-stone-800"}`}
                           >
                             {ing.name}
                           </p>
 
-                          <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                          <div className="flex flex-wrap gap-x-2 gap-y-0.5">
                             {ing.calories != null && (
                               <p
-                                className={`text-[11px] font-medium ${isDark ? "text-stone-500" : "text-stone-400"}`}
+                                className={`text-[10px] font-medium ${isDark ? "text-stone-500" : "text-stone-400"}`}
                               >
                                 {ing.calories} kcal
                               </p>
                             )}
                             {ing.proteinGrams != null && ing.proteinGrams > 0 && (
-                              <p className="text-[11px] font-medium text-orange-500/70">
+                              <p className="text-[10px] font-medium text-orange-500/70">
                                 {ing.proteinGrams}g protein
                               </p>
                             )}
                           </div>
 
                           {/* Hover overlay */}
-                          <div className="absolute inset-0 rounded-2xl bg-orange-500/0 group-hover:bg-orange-500/[0.07] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200">
-                            <div className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30 scale-0 group-hover:scale-100 transition-transform duration-200">
-                              <Plus className="w-4 h-4 text-white" />
+                          <div className="absolute inset-0 rounded-xl bg-orange-500/0 group-hover:bg-orange-500/[0.07] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200">
+                            <div className="w-7 h-7 rounded-full bg-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/30 scale-0 group-hover:scale-100 transition-transform duration-200">
+                              <Plus className="w-3.5 h-3.5 text-white" />
                             </div>
                           </div>
                         </motion.div>
@@ -690,34 +719,155 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
                   className={`h-px mx-6 ${isDark ? "bg-white/[0.06]" : "bg-black/[0.06]"}`}
                 />
 
-                {/* Selected ingredients list */}
-                <div className="px-4 py-4 max-h-[42vh] overflow-y-auto space-y-2">
-                  <AnimatePresence>
-                    {selected.length === 0 ? (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className={`text-center py-10 ${isDark ? "text-stone-700" : "text-stone-300"}`}
-                      >
-                        <div className="float-icon inline-block mb-3">
-                          <Sparkles className="w-8 h-8 opacity-50" />
+                {/* ─── Orbital ingredient visual ─── */}
+                <div className="relative flex items-center justify-center py-5 px-4">
+                  <div className="relative" style={{ width: 176, height: 176 }}>
+                    {/* Rotating dashed orbit ring */}
+                    <div
+                      className="absolute inset-0 orbit-ring rounded-full"
+                      style={{
+                        border: `1.5px dashed ${isDark ? "rgba(251,146,60,0.18)" : "rgba(251,146,60,0.15)"}`,
+                      }}
+                    />
+
+                    {/* Second inner ring */}
+                    <div
+                      className="absolute rounded-full"
+                      style={{
+                        inset: 28,
+                        border: `1px solid ${isDark ? "rgba(251,146,60,0.06)" : "rgba(251,146,60,0.05)"}`,
+                      }}
+                    />
+
+                    {/* Inner ambient glow */}
+                    <div
+                      className="absolute rounded-full transition-all duration-700"
+                      style={{
+                        inset: 20,
+                        background: selected.length > 0
+                          ? "radial-gradient(circle, rgba(251,146,60,0.12) 0%, transparent 70%)"
+                          : "radial-gradient(circle, rgba(251,146,60,0.04) 0%, transparent 70%)",
+                      }}
+                    />
+
+                    {/* SVG connecting lines */}
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 176 176">
+                      <AnimatePresence>
+                        {selected.slice(0, 8).map((s, i) => {
+                          const total = Math.min(selected.length, 8);
+                          const angle = (i / total) * Math.PI * 2 - Math.PI / 2;
+                          const x = 88 + 64 * Math.cos(angle);
+                          const y = 88 + 64 * Math.sin(angle);
+                          const catColor = (CATEGORY_BG[s.ingredient.category] || { accent: "#78716c" }).accent;
+                          return (
+                            <motion.line
+                              key={s.ingredient.id}
+                              x1="88" y1="88" x2={x} y2={y}
+                              stroke={catColor}
+                              strokeWidth="0.75"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 0.15 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.4 }}
+                            />
+                          );
+                        })}
+                      </AnimatePresence>
+                    </svg>
+
+                    {/* Center content */}
+                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                      {selected.length === 0 ? (
+                        <motion.div
+                          animate={{ scale: [1, 1.08, 1] }}
+                          transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                          className="flex flex-col items-center"
+                        >
+                          <Sparkles className={`w-7 h-7 ${isDark ? "text-orange-500/25" : "text-orange-500/20"}`} />
+                          <p className={`text-[10px] mt-1.5 font-medium ${isDark ? "text-stone-600" : "text-stone-400"}`}>
+                            Add ingredients
+                          </p>
+                        </motion.div>
+                      ) : (
+                        <div className="text-center">
+                          <motion.p
+                            key={Math.round(totalCalories)}
+                            initial={{ y: -4, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            className="text-xl font-bold text-orange-500 tabular-nums leading-none"
+                          >
+                            {Math.round(totalCalories)}
+                          </motion.p>
+                          <p className={`text-[9px] mt-0.5 uppercase tracking-wider font-medium ${isDark ? "text-stone-500" : "text-stone-400"}`}>
+                            kcal
+                            </p>
                         </div>
-                        <p className="text-sm font-medium">
-                          Click ingredients to add them
-                        </p>
-                        <p className="text-xs opacity-60 mt-1">
-                          Build your perfect meal
-                        </p>
+                      )}
+                    </div>
+
+                    {/* Orbiting ingredient icons */}
+                    <AnimatePresence>
+                      {selected.slice(0, 8).map((s, i) => {
+                        const total = Math.min(selected.length, 8);
+                        const angle = (i / total) * Math.PI * 2 - Math.PI / 2;
+                        const radius = 64;
+                        const cx = 88 + radius * Math.cos(angle);
+                        const cy = 88 + radius * Math.sin(angle);
+                        const catColor = (CATEGORY_BG[s.ingredient.category] || { accent: "#78716c" }).accent;
+                        return (
+                          <motion.div
+                            key={s.ingredient.id}
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 260, damping: 20, delay: i * 0.04 }}
+                            className="absolute"
+                            style={{ left: cx - 17, top: cy - 17, width: 34, height: 34 }}
+                          >
+                            {/* Category glow */}
+                            <div
+                              className="absolute inset-0 rounded-full blur-md"
+                              style={{ background: catColor, opacity: 0.3 }}
+                            />
+                            {/* Icon */}
+                            <motion.div
+                              animate={{ y: [0, -3, 0] }}
+                              transition={{ repeat: Infinity, duration: 2.5, delay: i * 0.35, ease: "easeInOut" }}
+                              className={`relative w-full h-full rounded-full flex items-center justify-center border shadow-sm ${isDark ? "bg-[#1a1816] border-white/10" : "bg-white border-black/10"}`}
+                              title={s.ingredient.name}
+                            >
+                              <img src={getIcon(s.ingredient)} alt={s.ingredient.name} className="w-5 h-5 object-contain" />
+                            </motion.div>
+                          </motion.div>
+                        );
+                      })}
+                    </AnimatePresence>
+
+                    {/* Overflow indicator */}
+                    {selected.length > 8 && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className={`absolute bottom-1 right-1 w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold border z-10 ${isDark ? "bg-[#1a1816] border-white/10 text-stone-400" : "bg-white border-black/10 text-stone-500"}`}
+                      >
+                        +{selected.length - 8}
                       </motion.div>
-                    ) : (
-                      selected.map((s) => (
+                    )}
+                  </div>
+                </div>
+
+                {/* Selected ingredients list */}
+                {selected.length > 0 && (
+                  <div className="px-4 pb-3 max-h-[30vh] overflow-y-auto space-y-1.5">
+                    <AnimatePresence>
+                      {selected.map((s) => (
                         <motion.div
                           key={s.ingredient.id}
                           initial={{ opacity: 0, x: 20, height: 0 }}
                           animate={{ opacity: 1, x: 0, height: "auto" }}
                           exit={{ opacity: 0, x: -20, height: 0 }}
                           transition={{ duration: 0.25 }}
-                          className={`flex items-center gap-3 p-3 rounded-xl border ${isDark
+                          className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl border ${isDark
                             ? "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.05]"
                             : "bg-stone-50/80 border-black/[0.05] hover:bg-stone-100/80"
                             } transition-colors`}
@@ -725,76 +875,62 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
                           <img
                             src={getIcon(s.ingredient)}
                             alt={s.ingredient.name}
-                            className="w-8 h-8 object-contain flex-shrink-0"
+                            className="w-6 h-6 object-contain flex-shrink-0"
                           />
                           <div className="flex-1 min-w-0">
                             <p
-                              className={`text-sm font-semibold truncate ${isDark ? "text-stone-200" : "text-stone-800"}`}
+                              className={`text-xs font-semibold truncate ${isDark ? "text-stone-200" : "text-stone-800"}`}
                             >
                               {s.ingredient.name}
                             </p>
                             <div className="flex gap-2">
                               {s.ingredient.calories != null && (
-                                <p
-                                  className={`text-[11px] ${isDark ? "text-stone-500" : "text-stone-400"}`}
-                                >
-                                  {Math.round(
-                                    (s.ingredient.calories * s.quantity),
-                                  )}{" "}
-                                  kcal
+                                <p className={`text-[10px] ${isDark ? "text-stone-500" : "text-stone-400"}`}>
+                                  {Math.round(s.ingredient.calories * s.quantity)} kcal
                                 </p>
                               )}
-                              {s.ingredient.proteinGrams != null &&
-                                s.ingredient.proteinGrams > 0 && (
-                                  <p className="text-[11px] text-orange-500/60">
-                                    {Math.round(
-                                      (s.ingredient.proteinGrams * s.quantity),
-                                    )}
-                                    g P
-                                  </p>
-                                )}
+                              {s.ingredient.proteinGrams != null && s.ingredient.proteinGrams > 0 && (
+                                <p className="text-[10px] text-orange-500/60">
+                                  {Math.round(s.ingredient.proteinGrams * s.quantity)}g P
+                                </p>
+                              )}
                             </div>
                           </div>
 
                           {/* Quantity controls */}
                           <div
-                            className={`flex items-center gap-0.5 rounded-xl px-1.5 py-1 ${isDark ? "bg-white/[0.05]" : "bg-black/[0.05]"
-                              }`}
+                            className={`flex items-center gap-0.5 rounded-lg px-1 py-0.5 ${isDark ? "bg-white/[0.05]" : "bg-black/[0.05]"}`}
                           >
                             <button
-                              onClick={() =>
-                                updateQuantity(s.ingredient.id, -50)
-                              }
-                              className="w-7 h-7 rounded-lg flex items-center justify-center text-orange-500 hover:bg-orange-500/10 transition-colors"
+                              onClick={() => updateQuantity(s.ingredient.id, -10)}
+                              className="w-6 h-6 rounded-md flex items-center justify-center text-orange-500 hover:bg-orange-500/10 transition-colors"
                             >
-                              <Minus className="w-3 h-3" />
+                              <Minus className="w-2.5 h-2.5" />
                             </button>
                             <span
-                              className={`text-xs font-bold w-11 text-center tabular-nums ${isDark ? "text-stone-300" : "text-stone-700"}`}
+                              className={`text-[11px] font-bold w-9 text-center tabular-nums ${isDark ? "text-stone-300" : "text-stone-700"}`}
                             >
                               {s.quantity}g
                             </span>
                             <button
-                              onClick={() =>
-                                updateQuantity(s.ingredient.id, 50)
-                              }
-                              className="w-7 h-7 rounded-lg flex items-center justify-center text-orange-500 hover:bg-orange-500/10 transition-colors"
+                              onClick={() => updateQuantity(s.ingredient.id, 10)}
+                              className="w-6 h-6 rounded-md flex items-center justify-center text-orange-500 hover:bg-orange-500/10 transition-colors"
                             >
-                              <Plus className="w-3 h-3" />
+                              <Plus className="w-2.5 h-2.5" />
                             </button>
                           </div>
 
                           <button
                             onClick={() => removeIngredient(s.ingredient.id)}
-                            className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors hover:bg-red-500/15 hover:text-red-500 ${isDark ? "text-stone-600" : "text-stone-400"}`}
+                            className={`w-6 h-6 rounded-md flex items-center justify-center transition-colors hover:bg-red-500/15 hover:text-red-500 ${isDark ? "text-stone-600" : "text-stone-400"}`}
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="w-3 h-3" />
                           </button>
                         </motion.div>
-                      ))
-                    )}
-                  </AnimatePresence>
-                </div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                )}
 
                 {/* Nutrition summary */}
                 <AnimatePresence>
@@ -879,8 +1015,13 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
                 </div>
               </div>
 
-              {/* ── COMMUNITY BOWLS — Below Your Bowl ── */}
-              {communityMeals.length > 0 && (
+              {/* ── COMMUNITY BOWLS — Single card carousel with dots ── */}
+              {communityMeals.length > 0 && (() => {
+                const activeMeal = communityMeals[communityMealIndex % communityMeals.length];
+                const mealIngredients = activeMeal.mealIngredients ?? [];
+                const cal = getMealCalories(activeMeal);
+                const pro = getMealProtein(activeMeal);
+                return (
                 <div className="flex flex-col mt-2">
                   <div className="flex items-center gap-2 mb-3 px-1.5">
                     <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-violet-400 to-indigo-500 flex items-center justify-center shadow-md shadow-violet-500/20">
@@ -896,109 +1037,130 @@ export default function MealCreator({ isDark = true }: { isDark?: boolean }) {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-3 relative">
-                    <AnimatePresence mode="popLayout" initial={false}>
-                      {(() => {
-                        const visibleMeals = [];
-                        if (communityMeals.length > 0) {
-                          visibleMeals.push(communityMeals[communityMealIndex % communityMeals.length]);
-                        }
-                        if (communityMeals.length > 1) {
-                          visibleMeals.push(communityMeals[(communityMealIndex + 1) % communityMeals.length]);
-                        }
-                        return visibleMeals.map((meal) => {
-                          const mealIngredients = meal.mealIngredients ?? [];
-                          const cal = getMealCalories(meal);
-                          const pro = getMealProtein(meal);
-                          return (
-                            <motion.div
-                              key={meal.id}
-                              layout
-                              initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              exit={{ opacity: 0, y: -30, scale: 0.95 }}
-                              transition={{ duration: 0.5, type: "spring", bounce: 0.2 }}
-                              whileHover={{ y: -2 }}
-                              className={`relative rounded-2xl border overflow-hidden transition-all duration-200 ${isDark
-                              ? "bg-[#131210] border-white/[0.07] hover:border-violet-500/30"
-                              : "bg-white border-black/[0.07] hover:border-violet-500/30"
-                            } shadow-sm hover:shadow-md ${isDark ? "hover:shadow-violet-500/5" : "hover:shadow-violet-500/10"}`}
-                          >
-                          {/* Gradient header */}
-                          <div
-                            className="h-12 relative"
-                            style={{
-                              background: isDark
-                                ? "linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(99,102,241,0.06) 100%)"
-                                : "linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(99,102,241,0.08) 100%)",
-                            }}
-                          >
-                            <div className="absolute inset-0 flex items-center justify-center gap-1.5 px-4">
-                              {mealIngredients.slice(0, 5).map((mi) => (
-                                <div
-                                  key={mi.ingredient.id}
-                                  className={`w-8 h-8 rounded-lg flex items-center justify-center backdrop-blur-sm border ${isDark ? "bg-black/30 border-white/10" : "bg-white/60 border-black/10"}`}
-                                  title={mi.ingredient.name}
-                                >
-                                  <img src={getIcon(mi.ingredient)} alt={mi.ingredient.name} className="w-5 h-5 object-contain" />
-                                </div>
-                              ))}
-                              {mealIngredients.length > 5 && (
-                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center backdrop-blur-sm border text-[10px] font-bold ${isDark ? "bg-black/30 border-white/10 text-stone-400" : "bg-white/60 border-black/10 text-stone-500"}`}>
-                                  +{mealIngredients.length - 5}
-                                </div>
-                              )}
+                  {/* Single card */}
+                  <div className="relative">
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.div
+                        key={activeMeal.id}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                        className={`relative rounded-2xl border overflow-hidden ${isDark
+                          ? "bg-[#131210] border-white/[0.07]"
+                          : "bg-white border-black/[0.07]"
+                        } shadow-sm`}
+                      >
+                        {/* Gradient header */}
+                        <div
+                          className="h-12 relative"
+                          style={{
+                            background: isDark
+                              ? "linear-gradient(135deg, rgba(139,92,246,0.12) 0%, rgba(99,102,241,0.06) 100%)"
+                              : "linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(99,102,241,0.08) 100%)",
+                          }}
+                        >
+                          <div className="absolute inset-0 flex items-center justify-center gap-1.5 px-4">
+                            {mealIngredients.slice(0, 5).map((mi) => (
+                              <div
+                                key={mi.ingredient.id}
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center backdrop-blur-sm border ${isDark ? "bg-black/30 border-white/10" : "bg-white/60 border-black/10"}`}
+                                title={mi.ingredient.name}
+                              >
+                                <img src={getIcon(mi.ingredient)} alt={mi.ingredient.name} className="w-5 h-5 object-contain" />
+                              </div>
+                            ))}
+                            {mealIngredients.length > 5 && (
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center backdrop-blur-sm border text-[10px] font-bold ${isDark ? "bg-black/30 border-white/10 text-stone-400" : "bg-white/60 border-black/10 text-stone-500"}`}>
+                                +{mealIngredients.length - 5}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="px-3 pb-3 pt-2">
+                          <h4 className={`font-display text-sm font-bold truncate mb-1.5 ${isDark ? "text-stone-100" : "text-stone-900"}`}>
+                            {activeMeal.name}
+                          </h4>
+
+                          {/* Ingredient chips */}
+                          <div className="flex flex-wrap gap-1 mb-2.5">
+                            {mealIngredients.slice(0, 4).map((mi, idx) => (
+                              <span
+                                key={idx}
+                                className={`inline-flex items-center gap-1 text-[9px] font-medium px-1.5 py-0.5 rounded-md border ${isDark
+                                  ? "bg-white/[0.03] border-white/[0.06] text-stone-500"
+                                  : "bg-stone-50 border-stone-200 text-stone-500"
+                                }`}
+                              >
+                                {mi.ingredient.name}
+                              </span>
+                            ))}
+                            {mealIngredients.length > 4 && (
+                              <span className={`text-[9px] px-1 py-0.5 ${isDark ? "text-stone-600" : "text-stone-400"}`}>
+                                +{mealIngredients.length - 4} more
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Stats */}
+                          <div className={`flex items-center gap-3 px-2.5 py-1.5 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/[0.05]" : "bg-stone-50 border-black/[0.04]"}`}>
+                            <div className="flex items-center gap-1.5">
+                              <Zap className="w-3 h-3 text-orange-500" />
+                              <span className="text-xs font-bold text-orange-500 tabular-nums">{Math.round(cal)}</span>
+                              <span className={`text-[9px] ${isDark ? "text-stone-600" : "text-stone-400"}`}>kcal</span>
+                            </div>
+                            <div className={`w-px h-3 ${isDark ? "bg-white/[0.07]" : "bg-black/[0.07]"}`} />
+                            <div className="flex items-center gap-1.5">
+                              <TrendingUp className="w-3 h-3 text-blue-500" />
+                              <span className="text-xs font-bold text-blue-500 tabular-nums">{Math.round(pro)}g</span>
+                              <span className={`text-[9px] ${isDark ? "text-stone-600" : "text-stone-400"}`}>protein</span>
                             </div>
                           </div>
 
-                          <div className="px-3 pb-3 pt-2">
-                            <h4 className={`font-display text-sm font-bold truncate mb-1.5 ${isDark ? "text-stone-100" : "text-stone-900"}`}>
-                              {meal.name}
-                            </h4>
-
-                            {/* Ingredient chips */}
-                            <div className="flex flex-wrap gap-1 mb-2.5">
-                              {mealIngredients.slice(0, 4).map((mi, idx) => (
-                                <span
-                                  key={idx}
-                                  className={`inline-flex items-center gap-1 text-[9px] font-medium px-1.5 py-0.5 rounded-md border ${isDark
-                                    ? "bg-white/[0.03] border-white/[0.06] text-stone-500"
-                                    : "bg-stone-50 border-stone-200 text-stone-500"
-                                  }`}
-                                >
-                                  {mi.ingredient.name}
-                                </span>
-                              ))}
-                              {mealIngredients.length > 4 && (
-                                <span className={`text-[9px] px-1 py-0.5 ${isDark ? "text-stone-600" : "text-stone-400"}`}>
-                                  +{mealIngredients.length - 4} more
-                                </span>
-                              )}
-                            </div>
-
-                            {/* Stats */}
-                            <div className={`flex items-center gap-3 px-2.5 py-1.5 rounded-xl border ${isDark ? "bg-white/[0.02] border-white/[0.05]" : "bg-stone-50 border-black/[0.04]"}`}>
-                              <div className="flex items-center gap-1.5">
-                                <Zap className="w-3 h-3 text-orange-500" />
-                                <span className="text-xs font-bold text-orange-500 tabular-nums">{Math.round(cal)}</span>
-                                <span className={`text-[9px] ${isDark ? "text-stone-600" : "text-stone-400"}`}>kcal</span>
-                              </div>
-                              <div className={`w-px h-3 ${isDark ? "bg-white/[0.07]" : "bg-black/[0.07]"}`} />
-                              <div className="flex items-center gap-1.5">
-                                <TrendingUp className="w-3 h-3 text-blue-500" />
-                                <span className="text-xs font-bold text-blue-500 tabular-nums">{Math.round(pro)}g</span>
-                                <span className={`text-[9px] ${isDark ? "text-stone-600" : "text-stone-400"}`}>protein</span>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    });
-                  })()}
+                          {/* Save to my meals button */}
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.97 }}
+                            disabled={savingCommunityId === activeMeal.id}
+                            onClick={() => saveCommunityMeal(activeMeal)}
+                            className={`w-full mt-2.5 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${isDark
+                              ? "bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 border border-violet-500/20"
+                              : "bg-violet-50 text-violet-600 hover:bg-violet-100 border border-violet-200"
+                            } ${savingCommunityId === activeMeal.id ? "opacity-60 cursor-not-allowed" : ""}`}
+                          >
+                            {savingCommunityId === activeMeal.id ? (
+                              <><Loader2 className="w-3 h-3 animate-spin" /> Saving...</>
+                            ) : (
+                              <><Bookmark className="w-3 h-3" /> Save to My Meals</>
+                            )}
+                          </motion.button>
+                        </div>
+                      </motion.div>
                     </AnimatePresence>
                   </div>
+
+                  {/* Dot indicators */}
+                  {communityMeals.length > 1 && (
+                    <div className="flex items-center justify-center gap-1.5 mt-3">
+                      {communityMeals.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setCommunityMealIndex(idx)}
+                          className={`rounded-full transition-all duration-300 ${
+                            idx === communityMealIndex % communityMeals.length
+                              ? "w-5 h-2 bg-violet-500"
+                              : isDark
+                                ? "w-2 h-2 bg-white/15 hover:bg-white/30"
+                                : "w-2 h-2 bg-black/15 hover:bg-black/30"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
+                );
+              })()}
             </div>
 
           </motion.div>
